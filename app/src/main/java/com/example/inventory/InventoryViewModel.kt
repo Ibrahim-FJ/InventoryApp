@@ -22,20 +22,11 @@ class InventoryViewModel(private val itemDao: ItemDao): ViewModel() {
 
 
     fun addNewItem(name: String, price: String, count: String){
-        if (isEntryValid(name, price, count)){
-            insertItem(getNewItem(name, price, count))
-
-        }
+        insertItem(getNewItem(name, price, count))
 
     }
 
 
-    fun isEntryValid(itemName: String, itemPrice: String, itemCount: String): Boolean {
-        if (itemName.isBlank() || itemPrice.isBlank() || itemCount.isBlank()) {
-            return false
-        }
-        return true
-    }
 
     fun retrieveItem(id: Int): LiveData<Item> {
         return itemDao.getItem(id).asLiveData()
@@ -51,7 +42,6 @@ class InventoryViewModel(private val itemDao: ItemDao): ViewModel() {
 
     fun sellItem(item: Item) {
         if (item.quantityInStock > 0) {
-            // Decrease the quantity by 1
             val newItem = item.copy(quantityInStock = item.quantityInStock - 1)
             updateItem(newItem)
         }
@@ -90,10 +80,8 @@ class InventoryViewModel(private val itemDao: ItemDao): ViewModel() {
         itemPrice: String,
         itemCount: String
     ) {
-        if (isEntryValid(itemName, itemPrice, itemCount)){
-            val updatedItem = getUpdatedItemEntry(itemId, itemName, itemPrice, itemCount)
-            updateItem(updatedItem)
-        }
+        val updatedItem = getUpdatedItemEntry(itemId, itemName, itemPrice, itemCount)
+        updateItem(updatedItem)
 
     }
 }

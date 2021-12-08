@@ -22,6 +22,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
@@ -100,26 +101,50 @@ class AddItemFragment : Fragment() {
     }
 
     private fun updateItem() {
-        viewModel.updateItem(
-            this.navigationArgs.itemId,
-            this.binding.itemName.text.toString(),
-            this.binding.itemPrice.text.toString(),
-            this.binding.itemCount.text.toString()
-        )
-        val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
-        findNavController().navigate(action)
+        val itemName = this.binding.itemName.text.toString()
+        val itemPrice = this.binding.itemPrice.text.toString()
+        val itemCount = this.binding.itemCount.text.toString()
+        if (isEntryValid(itemName, itemPrice, itemCount)){
+            viewModel.updateItem(
+                this.navigationArgs.itemId,
+                itemName,
+                itemPrice,
+                itemCount
+
+            )
+            val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
+            findNavController().navigate(action)
+
+        }else{
+            Toast.makeText(requireContext(), "Please enter a valid input", Toast.LENGTH_SHORT).show()
+        }
 
     }
 
     private fun addNewItem() {
+        val itemName = binding.itemName.text.toString()
+        val itemPrice = binding.itemPrice.text.toString()
+        val itemCount = binding.itemCount.text.toString()
 
-        viewModel.addNewItem(
-            binding.itemName.text.toString(),
-            binding.itemPrice.text.toString(),
-            binding.itemCount.text.toString(),
-        )
-        val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
-        findNavController().navigate(action)
+        if (isEntryValid(itemName, itemPrice, itemCount)) {
+            viewModel.addNewItem(
+                itemName,
+                itemPrice,
+                itemCount,
+            )
+            val action = AddItemFragmentDirections.actionAddItemFragmentToItemListFragment()
+            findNavController().navigate(action)
 
+        } else {
+            Toast.makeText(requireContext(), "Please enter valid input", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+    fun isEntryValid(itemName: String, itemPrice: String, itemCount: String): Boolean {
+        if (itemName.isBlank() || itemPrice.isBlank() || itemCount.isBlank()) {
+            return false
+        }
+        return true
     }
 }
